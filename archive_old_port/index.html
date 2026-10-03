@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventure (Atari 2600 Port — ASM-faithful)</title>
+    <style>
+        body {
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #F8C838;
+            font-family: 'Courier New', Courier, monospace;
+            text-shadow: 0 0 4px #B89858;
+        }
+        /*
+         * The canvas is the NATIVE Atari 2600 TIA resolution (160x192).
+         * CSS displays it at 640x576 — 4x horizontal, 3x vertical scaling
+         * with image-rendering: pixelated. Non-square pixels approximate
+         * the original CRT look where pixels were ~1.6:1 wider than tall.
+         * The JavaScript works in 1:1 Atari coordinates.
+         */
+        canvas {
+            border: 6px solid #F8C838;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            background-color: #B8B8B8;
+            box-shadow: 0 0 24px rgba(248, 200, 56, 0.35);
+            width: 640px;
+            height: 576px;
+        }
+        .ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            pointer-events: none;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 8px 12px;
+            border: 2px solid #F8C838;
+        }
+        .ui h1 {
+            margin: 0 0 4px 0;
+            font-size: 18px;
+            letter-spacing: 2px;
+        }
+        .ui p {
+            margin: 0 0 4px 0;
+            font-size: 12px;
+            color: #B89858;
+        }
+        .ui #status {
+            font-size: 12px;
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body>
+    <div class="ui">
+        <h1>ADVENTURE</h1>
+        <p>WASD or Arrows to move</p>
+        <div id="status">Room: -- | Carrying: None</div>
+    </div>
+    <!--
+        160x192 native Atari 2600 TIA resolution. CSS displays at
+        640x576 (4x horizontal, 3x vertical) with image-rendering:
+        pixelated. Non-square pixels approximate original CRT look.
+    -->
+    <canvas id="gameCanvas" width="160" height="192"></canvas>
+    <script type="module" src="src/main.js?v=66"></script>
+</body>
+</html>

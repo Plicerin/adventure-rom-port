@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Minimal Test</title></head>
+<body>
+<canvas id="c" width="160" height="192" style="border:2px solid red;"></canvas>
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+ctx.fillStyle = 'yellow';
+ctx.fillRect(0, 0, 160, 192);
+console.log('Canvas filled yellow');
+document.body.style.margin = '0';
+document.body.style.padding = '40px';
+document.body.style.backgroundColor = '#333';
+</script>
+</body>
+</html>

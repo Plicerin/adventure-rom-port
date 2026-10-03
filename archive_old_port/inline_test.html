@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Inline Test</title></head>
+<body>
+<canvas id="c" width="160" height="192" style="width:640px;height:576px;image-rendering:pixelated;border:2px solid red;"></canvas>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+const PALETTE = {'$08': '#B8B8B8', '$1A': '#F8B828'};
+const ROOM_BG = PALETTE['$08'];
+
+// Inline CastleDef pattern
+const CastleDef = [
+    [0xF0,0xFE,0x15], [0x30,0x03,0x1F], [0x30,0x03,0xFF],
+    [0x30,0x00,0xFF], [0x30,0x00,0x3F], [0x30,0x00,0x00],
+    [0xF0,0xFF,0x0F],
+];
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+
+// Background
+ctx.fillStyle = ROOM_BG;
+ctx.fillRect(0, 0, 160, 192);
+
+// Draw CastleDef (yellow for bit=1)
+ctx.fillStyle = PALETTE['$1A'];
+const boundaries = [0, 21, 42, 63, 84, 105, 126, 147, 192];
+
+for (let row = 0; row < boundaries.length - 1; row++) {
+    const patternRow = row < CastleDef.length ? row : CastleDef.length - 1;
+    const [pf0, pf1, pf2] = CastleDef[patternRow];
+    const yStart = boundaries[row];
+    const yEnd = boundaries[row + 1];
+    for (let y = yStart; y < yEnd; y++) {
+        for (let x = 0; x < 160; x++) {
+            const bitPos = x < 80 ? Math.floor(x / 4) : Math.floor((159 - x) / 4);
+            const bit = bitPos < 8 ? (pf2 >> (7 - bitPos)) & 1 :
+                        bitPos < 16 ? (pf1 >> (15 - bitPos)) & 1 : (pf0 >> (23 - bitPos)) & 1;
+            if (bit) { ctx.fillRect(x, y, 1, 1); }
+        }
+    }
+}
+document.body.style.backgroundColor = '#222';
+document.body.style.display = 'flex';
+document.body.style.justifyContent = 'center';
+document.body.style.alignItems = 'center';
+document.body.style.height = '100vh';
+document.body.style.margin = '0';
+});
+</script>
+</body>
+</html>

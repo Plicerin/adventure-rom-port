@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Adventure - Inline Complete</title></head>
+<body>
+<canvas id="gameCanvas" width="160" height="192" style="width:640px;height:576px;image-rendering:pixelated;border:6px solid #F8C838;"></canvas>
+<script>
+// Complete inline implementation
+const PALETTE = {
+    '$00': '#000000', '$02': '#525252', '$06': '#A4A4A4', '$08': '#B8B8B8',
+    '$0A': '#FFFFFF', '$0C': '#BCBCBC', '$0E': '#FCFCFC', '$1A': '#F8B828',
+    '$1C': '#F8F8F8', '$24': '#000000', '$25': '#000000', '$28': '#404040',
+    '$36': '#D02828', '$66': '#A438A8', '$86': '#3858D8', '$98': '#A438A8',
+    '$A1': '#80D828', '$A8': '#80D828', '$B8': '#80D828', '$C8': '#80D828',
+    '$CB': '#F8B828', '$D8': '#F8B828', '$D9': '#F8C828', '$E8': '#F87858',
+};
+const ROOM_BG = PALETTE['$08'];
+
+const CastleDef = [
+    [0xF0,0xFE,0x15], [0x30,0x03,0x1F], [0x30,0x03,0xFF],
+    [0x30,0x00,0xFF], [0x30,0x00,0x3F], [0x30,0x00,0x00],
+    [0xF0,0xFF,0x0F],
+];
+
+const ROOM_WALL_BY_ID = {
+    17: 'CastleDef',
+};
+
+function getPfBit(pf0, pf1, pf2, i) {
+    if (i < 8) return (pf2 >> (7 - i)) & 1;
+    else if (i < 16) return (pf1 >> (15 - i)) & 1;
+    else return (pf0 >> (23 - i)) & 1;
+}
+
+// Game state
+window.GameContext = {
+    registers: { roomId: 17, playerX: 80, playerY: 32, gameMode: 'game1' },
+};
+
+// Renderer
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+function drawWalls() {
+    const roomId = GameContext.registers.roomId;
+    const patternName = ROOM_WALL_BY_ID[roomId];
+    const pattern = CastleDef; // CastleDef for room 17
+    
+    const interiorColor = PALETTE['$1A']; // Yellow
+    const boundaries = [0, 21, 42, 63, 84, 105, 126, 147, 192];
+    
+    ctx.fillStyle = interiorColor;
+    for (let row = 0; row < boundaries.length - 1; row++) {
+        const [pf0, pf1, pf2] = pattern[row];
+        for (let y = boundaries[row]; y < boundaries[row + 1]; y++) {
+            for (let x = 0; x < 160; x++) {
+                const bitPos = x < 80 ? Math.floor(x / 4) : Math.floor((159 - x) / 4);
+                if (getPfBit(pf0, pf1, pf2, bitPos)) {
+                    ctx.fillRect(x, y, 1, 1);
+                }
+            }
+        }
+    }
+}
+
+function render() {
+    ctx.fillStyle = ROOM_BG;
+    ctx.fillRect(0, 0, 160, 192);
+    drawWalls();
+    // Player
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(GameContext.registers.playerX, GameContext.registers.playerY, 1, 1);
+}
+
+render();
+document.body.style.backgroundColor = '#000';
+document.body.style.display = 'flex';
+document.body.style.justifyContent = 'center';
+document.body.style.alignItems = 'center';
+document.body.style.height = '100vh';
+document.body.style.margin = '0';
+</script>
+</body>
+</html>

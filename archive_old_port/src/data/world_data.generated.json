@@ -1,0 +1,1412 @@
+{
+  "_generated_from": "adventure.asm",
+  "_extraction_date": "2026-08-04T06:33:41.273Z",
+  "rooms": [
+    {
+      "id": 0,
+      "name": "Number Room.",
+      "color": "0x66",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 0,
+        "left": 0,
+        "down": 0,
+        "right": 0
+      }
+    },
+    {
+      "id": 1,
+      "name": "(Top Acess) Reflected/8 Clock Ball",
+      "color": "0xD8",
+      "ctrlpf": "0xA1",
+      "exits": {
+        "above": 8,
+        "left": 2,
+        "down": 128,
+        "right": 3
+      }
+    },
+    {
+      "id": 2,
+      "name": "(Top Access)",
+      "color": "0xC8",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 17,
+        "left": 3,
+        "down": 131,
+        "right": 1
+      }
+    },
+    {
+      "id": 3,
+      "name": "Left of Name",
+      "color": "0xE8",
+      "ctrlpf": "0x61",
+      "exits": {
+        "above": 6,
+        "left": 1,
+        "down": 134,
+        "right": 2
+      }
+    },
+    {
+      "id": 4,
+      "name": "Top of Blue Maze",
+      "color": "0x86",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 16,
+        "left": 5,
+        "down": 7,
+        "right": 6
+      }
+    },
+    {
+      "id": 5,
+      "name": "Blue Maze #1",
+      "color": "0x86",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 29,
+        "left": 6,
+        "down": 8,
+        "right": 4
+      }
+    },
+    {
+      "id": 6,
+      "name": "Bottom of Blue Maze",
+      "color": "0x86",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 7,
+        "left": 4,
+        "down": 3,
+        "right": 5
+      }
+    },
+    {
+      "id": 7,
+      "name": "Center of Blue Maze",
+      "color": "0x86",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 4,
+        "left": 8,
+        "down": 6,
+        "right": 8
+      }
+    },
+    {
+      "id": 8,
+      "name": "Blue Maze Entry",
+      "color": "0x86",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 5,
+        "left": 7,
+        "down": 1,
+        "right": 7
+      }
+    },
+    {
+      "id": 9,
+      "name": "Maze Middle",
+      "color": "0x08",
+      "ctrlpf": "0x25",
+      "exits": {
+        "above": 10,
+        "left": 10,
+        "down": 11,
+        "right": 10
+      }
+    },
+    {
+      "id": 10,
+      "name": "Maze Entry",
+      "color": "0x08",
+      "ctrlpf": "0x25",
+      "exits": {
+        "above": 3,
+        "left": 9,
+        "down": 9,
+        "right": 9
+      }
+    },
+    {
+      "id": 11,
+      "name": "Maze Side Invisible",
+      "color": "0x08",
+      "ctrlpf": "0x25",
+      "exits": {
+        "above": 9,
+        "left": 12,
+        "down": 28,
+        "right": 13
+      }
+    },
+    {
+      "id": 12,
+      "name": "(Side Corridor)",
+      "color": "0x98",
+      "ctrlpf": "0x61",
+      "exits": {
+        "above": 28,
+        "left": 13,
+        "down": 29,
+        "right": 11
+      }
+    },
+    {
+      "id": 13,
+      "name": "(Side Corridor)",
+      "color": "0xB8",
+      "ctrlpf": "0xA1",
+      "exits": {
+        "above": 15,
+        "left": 11,
+        "down": 14,
+        "right": 12
+      }
+    },
+    {
+      "id": 14,
+      "name": "(Top Entry Room)",
+      "color": "0xA8",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 13,
+        "left": 16,
+        "down": 15,
+        "right": 16
+      }
+    },
+    {
+      "id": 15,
+      "name": "White Castle",
+      "color": "0x0C",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 14,
+        "left": 15,
+        "down": 13,
+        "right": 15
+      }
+    },
+    {
+      "id": 16,
+      "name": "Black Castle",
+      "color": "0x00",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 1,
+        "left": 28,
+        "down": 4,
+        "right": 28
+      }
+    },
+    {
+      "id": 17,
+      "name": "Yellow Castle",
+      "color": "0x1A",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 6,
+        "left": 3,
+        "down": 2,
+        "right": 1
+      }
+    },
+    {
+      "id": 18,
+      "name": "Yellow Castle Entry",
+      "color": "0x1A",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 18,
+        "left": 18,
+        "down": 18,
+        "right": 18
+      }
+    },
+    {
+      "id": 19,
+      "name": "Black Maze #1 Invisible",
+      "color": "0x08",
+      "ctrlpf": "0x25",
+      "exits": {
+        "above": 21,
+        "left": 20,
+        "down": 21,
+        "right": 22
+      }
+    },
+    {
+      "id": 20,
+      "name": "Black Maze #2 Invisible",
+      "color": "0x08",
+      "ctrlpf": "0x24",
+      "exits": {
+        "above": 22,
+        "left": 21,
+        "down": 22,
+        "right": 19
+      }
+    },
+    {
+      "id": 21,
+      "name": "Black Maze #3 Invisible",
+      "color": "0x08",
+      "ctrlpf": "0x24",
+      "exits": {
+        "above": 19,
+        "left": 22,
+        "down": 19,
+        "right": 20
+      }
+    },
+    {
+      "id": 22,
+      "name": "Black Maze Entry Invisible",
+      "color": "0x08",
+      "ctrlpf": "0x25",
+      "exits": {
+        "above": 20,
+        "left": 19,
+        "down": 27,
+        "right": 21
+      }
+    },
+    {
+      "id": 23,
+      "name": "Red Maze #1",
+      "color": "0x36",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 25,
+        "left": 24,
+        "down": 25,
+        "right": 24
+      }
+    },
+    {
+      "id": 24,
+      "name": "Top of Red Maze",
+      "color": "0x36",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 26,
+        "left": 23,
+        "down": 26,
+        "right": 23
+      }
+    },
+    {
+      "id": 25,
+      "name": "Bottom of Red Maze",
+      "color": "0x36",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 23,
+        "left": 26,
+        "down": 23,
+        "right": 26
+      }
+    },
+    {
+      "id": 26,
+      "name": "White Castle Entry",
+      "color": "0x36",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 24,
+        "left": 25,
+        "down": 24,
+        "right": 25
+      }
+    },
+    {
+      "id": 27,
+      "name": "Black Castle Entry",
+      "color": "0x36",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 137,
+        "left": 137,
+        "down": 137,
+        "right": 137
+      }
+    },
+    {
+      "id": 28,
+      "name": "Other Purple Room",
+      "color": "0x66",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 29,
+        "left": 7,
+        "down": 140,
+        "right": 8
+      }
+    },
+    {
+      "id": 29,
+      "name": "(Top Entry Room)",
+      "color": "0x36",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 143,
+        "left": 1,
+        "down": 16,
+        "right": 3
+      }
+    },
+    {
+      "id": 30,
+      "name": "Name Room",
+      "color": "0x66",
+      "ctrlpf": "0x21",
+      "exits": {
+        "above": 6,
+        "left": 1,
+        "down": 6,
+        "right": 3
+      }
+    }
+  ],
+  "room_diffs": [
+    [
+      16,
+      15,
+      15
+    ],
+    [
+      5,
+      17,
+      17
+    ],
+    [
+      29,
+      10,
+      10
+    ],
+    [
+      28,
+      22,
+      22
+    ],
+    [
+      27,
+      12,
+      12
+    ],
+    [
+      3,
+      12,
+      12
+    ]
+  ],
+  "castle_mappings": {
+    "portOffsets": [
+      9,
+      18,
+      27
+    ],
+    "keyOffsets": [
+      99,
+      108,
+      117
+    ],
+    "entryRoomOffsets": [
+      18,
+      26,
+      27
+    ],
+    "castleRoomOffsets": [
+      17,
+      15,
+      16
+    ]
+  },
+  "playfield_patterns": {
+    "NumberRoom": [
+      [
+        240,
+        255,
+        255
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        240,
+        255,
+        15
+      ]
+    ],
+    "BelowYellowCastle": [
+      [
+        240,
+        255,
+        15
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        240,
+        255,
+        255
+      ]
+    ],
+    "LeftOfName": [
+      [
+        240,
+        255,
+        255
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "BlueMazeTop": [
+      [
+        240,
+        255,
+        15
+      ],
+      [
+        0,
+        12,
+        12
+      ],
+      [
+        240,
+        12,
+        60
+      ],
+      [
+        240,
+        12,
+        0
+      ],
+      [
+        240,
+        255,
+        63
+      ],
+      [
+        0,
+        48,
+        48
+      ],
+      [
+        240,
+        51,
+        63
+      ]
+    ],
+    "BlueMaze1": [
+      [
+        240,
+        255,
+        255
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        240,
+        252,
+        255
+      ],
+      [
+        240,
+        0,
+        192
+      ],
+      [
+        240,
+        63,
+        207
+      ],
+      [
+        0,
+        48,
+        204
+      ],
+      [
+        240,
+        243,
+        204
+      ]
+    ],
+    "BlueMazeBottom": [
+      [
+        240,
+        243,
+        12
+      ],
+      [
+        0,
+        48,
+        12
+      ],
+      [
+        240,
+        63,
+        15
+      ],
+      [
+        240,
+        0,
+        0
+      ],
+      [
+        240,
+        240,
+        0
+      ],
+      [
+        0,
+        48,
+        0
+      ],
+      [
+        240,
+        255,
+        255
+      ]
+    ],
+    "BlueMazeCenter": [
+      [
+        240,
+        51,
+        63
+      ],
+      [
+        0,
+        48,
+        60
+      ],
+      [
+        240,
+        255,
+        60
+      ],
+      [
+        0,
+        3,
+        60
+      ],
+      [
+        240,
+        51,
+        60
+      ],
+      [
+        0,
+        51,
+        12
+      ],
+      [
+        240,
+        243,
+        12
+      ]
+    ],
+    "BlueMazeEntry": [
+      [
+        240,
+        243,
+        204
+      ],
+      [
+        0,
+        51,
+        12
+      ],
+      [
+        240,
+        51,
+        252
+      ],
+      [
+        0,
+        51,
+        0
+      ],
+      [
+        240,
+        243,
+        255
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        240,
+        255,
+        15
+      ]
+    ],
+    "MazeMiddle": [
+      [
+        240,
+        255,
+        204
+      ],
+      [
+        0,
+        0,
+        204
+      ],
+      [
+        240,
+        3,
+        207
+      ],
+      [
+        0,
+        3,
+        0
+      ],
+      [
+        240,
+        243,
+        252
+      ],
+      [
+        0,
+        51,
+        12
+      ]
+    ],
+    "MazeSide": [
+      [
+        240,
+        51,
+        204
+      ],
+      [
+        0,
+        48,
+        204
+      ],
+      [
+        0,
+        63,
+        207
+      ],
+      [
+        0,
+        0,
+        192
+      ],
+      [
+        0,
+        63,
+        195
+      ],
+      [
+        0,
+        48,
+        192
+      ],
+      [
+        240,
+        255,
+        255
+      ]
+    ],
+    "MazeEntry": [
+      [
+        240,
+        255,
+        15
+      ],
+      [
+        0,
+        48,
+        0
+      ],
+      [
+        240,
+        48,
+        255
+      ],
+      [
+        0,
+        48,
+        192
+      ],
+      [
+        240,
+        243,
+        192
+      ],
+      [
+        0,
+        3,
+        192
+      ],
+      [
+        240,
+        255,
+        204
+      ]
+    ],
+    "SideCorridor": [
+      [
+        240,
+        255,
+        15
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        240,
+        255,
+        15
+      ]
+    ],
+    "CastleDef": [
+      [
+        240,
+        254,
+        21
+      ],
+      [
+        48,
+        3,
+        31
+      ],
+      [
+        48,
+        3,
+        255
+      ],
+      [
+        48,
+        0,
+        255
+      ],
+      [
+        48,
+        0,
+        63
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        240,
+        255,
+        15
+      ]
+    ],
+    "WhiteCastleEntry": [
+      [
+        240,
+        63,
+        12
+      ],
+      [
+        240,
+        0,
+        12
+      ],
+      [
+        240,
+        255,
+        15
+      ],
+      [
+        0,
+        48,
+        0
+      ],
+      [
+        240,
+        48,
+        0
+      ],
+      [
+        0,
+        48,
+        0
+      ],
+      [
+        240,
+        255,
+        15
+      ]
+    ],
+    "TopEntryRoom": [
+      [
+        240,
+        255,
+        15
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        240,
+        255,
+        255
+      ]
+    ],
+    "BlackMaze1": [
+      [
+        240,
+        240,
+        255
+      ],
+      [
+        0,
+        0,
+        3
+      ],
+      [
+        240,
+        255,
+        3
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        48,
+        63,
+        255
+      ],
+      [
+        0,
+        48,
+        0
+      ]
+    ],
+    "BlackMaze3": [
+      [
+        240,
+        240,
+        255
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        48,
+        63,
+        255
+      ],
+      [
+        0,
+        48,
+        0
+      ],
+      [
+        240,
+        240,
+        255
+      ],
+      [
+        48,
+        0,
+        3
+      ],
+      [
+        240,
+        240,
+        255
+      ]
+    ],
+    "BlackMaze2": [
+      [
+        240,
+        255,
+        255
+      ],
+      [
+        0,
+        0,
+        192
+      ],
+      [
+        240,
+        255,
+        207
+      ],
+      [
+        0,
+        0,
+        12
+      ],
+      [
+        240,
+        15,
+        255
+      ],
+      [
+        0,
+        15,
+        192
+      ]
+    ],
+    "BlackMazeEntry": [
+      [
+        48,
+        207,
+        204
+      ],
+      [
+        0,
+        192,
+        204
+      ],
+      [
+        240,
+        255,
+        15
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        240,
+        255,
+        15
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        240,
+        255,
+        15
+      ]
+    ],
+    "RedMaze1": [
+      [
+        240,
+        255,
+        255
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        240,
+        255,
+        15
+      ],
+      [
+        0,
+        0,
+        12
+      ],
+      [
+        240,
+        255,
+        12
+      ],
+      [
+        240,
+        3,
+        204
+      ]
+    ],
+    "RedMazeBottom": [
+      [
+        240,
+        51,
+        207
+      ],
+      [
+        240,
+        48,
+        0
+      ],
+      [
+        240,
+        51,
+        255
+      ],
+      [
+        0,
+        51,
+        0
+      ],
+      [
+        240,
+        255,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        240,
+        255,
+        15
+      ]
+    ],
+    "RedMazeTop": [
+      [
+        240,
+        255,
+        255
+      ],
+      [
+        0,
+        0,
+        192
+      ],
+      [
+        240,
+        255,
+        207
+      ],
+      [
+        0,
+        0,
+        204
+      ],
+      [
+        240,
+        51,
+        255
+      ],
+      [
+        240,
+        51,
+        0
+      ]
+    ],
+    "TwoExitRoom": [
+      [
+        240,
+        255,
+        15
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        48,
+        0,
+        0
+      ],
+      [
+        240,
+        255,
+        15
+      ]
+    ]
+  },
+  "portcullis_positions": [
+    {
+      "room": 17,
+      "x": 77,
+      "y": 49
+    },
+    {
+      "room": 15,
+      "x": 77,
+      "y": 49
+    },
+    {
+      "room": 16,
+      "x": 77,
+      "y": 49
+    }
+  ],
+  "player_start": {
+    "room": 17,
+    "x": 80,
+    "y": 32
+  },
+  "game1_objects": [
+    {
+      "type": "object",
+      "object": "black_dot",
+      "room": 21,
+      "x": 81,
+      "y": 18
+    },
+    {
+      "type": "object",
+      "object": "red_dragon",
+      "room": 14,
+      "x": 80,
+      "y": 32,
+      "movement": 0,
+      "state": 0
+    },
+    {
+      "type": "object",
+      "object": "yellow_dragon",
+      "room": 1,
+      "x": 80,
+      "y": 32,
+      "movement": 0,
+      "state": 0
+    },
+    {
+      "type": "object",
+      "object": "green_dragon",
+      "room": 29,
+      "x": 80,
+      "y": 32,
+      "movement": 0,
+      "state": 0
+    },
+    {
+      "type": "object",
+      "object": "magnet",
+      "room": 27,
+      "x": 128,
+      "y": 32
+    },
+    {
+      "type": "object",
+      "object": "sword",
+      "room": 18,
+      "x": 32,
+      "y": 32
+    },
+    {
+      "type": "object",
+      "object": "challise",
+      "room": 28,
+      "x": 48,
+      "y": 32
+    },
+    {
+      "type": "object",
+      "object": "bridge",
+      "room": 4,
+      "x": 41,
+      "y": 55
+    },
+    {
+      "type": "object",
+      "object": "yellow_key",
+      "room": 17,
+      "x": 32,
+      "y": 64
+    },
+    {
+      "type": "object",
+      "object": "white_key",
+      "room": 14,
+      "x": 32,
+      "y": 64
+    },
+    {
+      "type": "object",
+      "object": "black_key",
+      "room": 29,
+      "x": 32,
+      "y": 64
+    },
+    {
+      "type": "portcullis_state",
+      "object": "portcullis_state",
+      "state": 28
+    },
+    {
+      "type": "portcullis_state",
+      "object": "portcullis_state",
+      "state": 28
+    },
+    {
+      "type": "portcullis_state",
+      "object": "portcullis_state",
+      "state": 28
+    },
+    {
+      "type": "object",
+      "object": "bat",
+      "room": 26,
+      "x": 32,
+      "y": 32,
+      "movement": 0,
+      "state": 0
+    },
+    {
+      "type": "bat_flags",
+      "carrying": 120,
+      "fedUp": 0
+    },
+    {
+      "type": "portcullis",
+      "object": "portcullis_1",
+      "room": 17,
+      "x": 77,
+      "y": 49
+    },
+    {
+      "type": "portcullis",
+      "object": "portcullis_2",
+      "room": 15,
+      "x": 77,
+      "y": 49
+    },
+    {
+      "type": "portcullis",
+      "object": "portcullis_3",
+      "room": 16,
+      "x": 77,
+      "y": 49
+    }
+  ]
+}

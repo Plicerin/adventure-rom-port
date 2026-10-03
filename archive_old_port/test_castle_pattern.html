@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>CastleDef Pattern Test</title></head>
+<body>
+<canvas id="c" width="160" height="192" style="width:640px;height:576px;image-rendering:pixelated;border:2px solid red;"></canvas>
+<pre id="out"></pre>
+<script>
+// === EXACT COPY of the fixed Renderer.js code ===
+const PALETTE = { '$1A': '#F8B828', '$08': '#B8B8B8' };
+const ROOM_BG = PALETTE['$08'];
+
+const CastleDef = [
+    [0xF0,0xFE,0x15],
+    [0x30,0x03,0x1F],
+    [0x30,0x03,0xFF],
+    [0x30,0x00,0xFF],
+    [0x30,0x00,0x3F],
+    [0x30,0x00,0x00],
+    [0xF0,0xFF,0x0F],
+];
+
+function getPfBit(pf0, pf1, pf2, i) {
+    // Atari 2600 playfield: each BIT = 4 color clocks (pixels)
+    // PF2 (8 bits) draws first (leftmost), then PF1 (8 bits), then PF0 (4 bits, upper nibble)
+    // bitPos 0-7 -> PF2 bits 7-0, 8-15 -> PF1 bits 7-0, 16-19 -> PF0 bits 7-4
+    if (i < 8) return (pf2 >> (7 - i)) & 1;
+    else if (i < 16) return (pf1 >> (15 - i)) & 1;
+    else return (pf0 >> (23 - i)) & 1;
+}
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+ctx.fillStyle = ROOM_BG;
+ctx.fillRect(0, 0, 160, 192);
+
+const BAND_HEIGHT = 27;
+ctx.fillStyle = PALETTE['$1A'];
+
+for (let row = 0; row < CastleDef.length; row++) {
+    const [pf0, pf1, pf2] = CastleDef[row];
+    const y = row * BAND_HEIGHT;
+    for (let i = 0; i < 160; i++) {
+        // CURRENT FIXED CODE: left=natural, right=mirror
+        const bitPos = i < 80
+            ? Math.floor(i / 4)
+            : Math.floor((159 - i) / 4);
+        if (getPfBit(pf0, pf1, pf2, bitPos)) {
+            ctx.fillRect(i, y, 1, BAND_HEIGHT);
+        }
+    }
+}
+
+// Output pixel map
+let out = '';
+for (let row = 0; row < 7; row++) {
+    const y = row * BAND_HEIGHT + 13;
+    let line = '';
+    for (let x = 0; x < 160; x++) {
+        const d = ctx.getImageData(x, y, 1, 1).data;
+        line += (d[0] > 180 && d[1] > 100 && d[2] < 80) ? 'X' : '.';
+    }
+    out += 'Row' + row + ': |' + line.substring(0,40) + '|' + line.substring(40,80) + '|' + line.substring(80,120) + '|' + line.substring(120,160) + '|\n';
+}
+
+// Verify edges
+const y1 = 27 + 13;
+let edgeTest = '';
+for (let x = 0; x < 8; x++) {
+    const d = ctx.getImageData(x, y1, 1, 1).data;
+    edgeTest += (d[0] > 180 && d[1] > 100 && d[2] < 80) ? 'X' : '_';
+}
+out += '\nRow1 EDGE x=0-7: ' + edgeTest + ' (should be ________ = NO yellow)';
+out += '\n' + (edgeTest === '________' ? 'EDGE TEST PASSED' : 'EDGE TEST FAILED - yellow at edges!');
+
+let centerTest = '';
+for (let x = 72; x < 80; x++) {
+    const d = ctx.getImageData(x, y1, 1, 1).data;
+    centerTest += (d[0] > 180 && d[1] > 100 && d[2] < 80) ? 'X' : '.';
+}
+out += '\nRow1 CENTER x=72-79: ' + centerTest + ' (should have X marks)';
+out += '\n' + (centerTest.includes('X') ? 'CENTER TEST PASSED' : 'CENTER TEST FAILED - no yellow at center!');
+
+document.getElementById('out').textContent = out;
+</script>
+</body>
+</html>

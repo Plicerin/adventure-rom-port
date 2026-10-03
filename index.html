@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d0d0a">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Adventure">
+  <link rel="apple-touch-icon" href="img/icon-180.png">
+  <title>Adventure — Atari 2600, 1980</title>
+  <meta name="description" content="Warren Robinett's Adventure for the Atari 2600, translated from the original cartridge instruction by instruction and checked against the real ROM frame by frame.">
+  <link rel="icon" href="img/icon-192.png">
+  <style>
+    /* Same landing-page system as the Dracula, River Raid and Donkey Kong ports, in Adventure's TIA colors. */
+    :root {
+      --lp-night: #0d0d0a;
+      --lp-panel: #1c1c14;
+      --lp-panel-2: #14140e;
+      --lp-line: #34341f;
+      --lp-line-2: #4a4a2a;
+      --lp-ink: #f2f2e6;
+      --lp-ink-2: #c2c2ac;
+      --lp-ink-3: #85856c;
+      --lp-accent: #d2d240;    /* the gold castle, TIA $1A */
+      --lp-accent-2: #e2e266;
+      --lp-grey: #aaaaaa;      /* every room's floor, TIA $08 */
+      --lp-rhindle: #c66c3a;   /* TIA $36 */
+      --lp-grundle: #5cba5c;   /* TIA $C8 */
+      --lp-labyrinth: #4248c8; /* TIA $86 */
+      --lp-link: #e0e070;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(120% 70% at 50% -10%, #33331a 0%, transparent 60%), var(--lp-night);
+      color: var(--lp-ink-2);
+      font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    main { width: min(1120px, 100%); }
+    code, kbd { font-family: ui-monospace, "Cascadia Mono", "Courier New", monospace; }
+    code { color: var(--lp-ink); }
+    a { color: var(--lp-link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--lp-accent); outline-offset: 3px; }
+    kbd {
+      display: inline-block; min-width: 1.5em; padding: 1px 6px; text-align: center;
+      border: 1px solid #5a5a34; border-bottom-width: 3px; border-radius: 5px;
+      background: #23231a; color: var(--lp-ink); font-size: 11px; line-height: 1.5;
+    }
+
+    .lp-hero { padding: 40px 0 26px; text-align: center; }
+    .lp-battlement { margin: 0 auto 24px; max-width: 300px; height: 18px; opacity: 0.9;
+      background: linear-gradient(var(--lp-accent), var(--lp-accent)) bottom / 100% 8px no-repeat, repeating-linear-gradient(90deg, var(--lp-accent) 0 14px, transparent 14px 28px) top / 100% 10px no-repeat; }
+    .lp-hero h1 {
+      font-size: clamp(36px, 10vw, 88px); line-height: 0.95; margin: 0; color: #fff; font-weight: 800;
+      letter-spacing: clamp(2px, 1.2vw, 12px); text-transform: uppercase; text-indent: clamp(2px, 1.2vw, 12px);
+      text-shadow: 0 2px 0 #5c5c14, 0 0 46px rgba(210, 210, 64, 0.45);
+    }
+    .lp-hero .lp-year { margin-top: 14px; font-size: 11px; letter-spacing: 5px; text-transform: uppercase; color: var(--lp-ink-3); }
+    .lp-hero .lp-sub { margin: 18px auto 0; max-width: 620px; font-size: 16px; line-height: 1.6; }
+    .lp-hero .lp-sub b { color: var(--lp-ink); font-weight: 600; }
+    .lp-cta { display: flex; justify-content: center; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+    .lp-btn {
+      display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 999px;
+      font-weight: 600; font-size: 14px; border: 1px solid var(--lp-line-2); background: var(--lp-panel);
+      color: var(--lp-ink); cursor: pointer; font-family: inherit; transition: transform 0.12s, background 0.12s, border-color 0.12s;
+    }
+    .lp-btn:hover { transform: translateY(-1px); border-color: #6a6a3a; text-decoration: none; }
+    .lp-btn.primary { background: var(--lp-accent); border-color: #8a8a20; color: #1a1a06; }
+    .lp-btn.primary:hover { background: var(--lp-accent-2); }
+
+    .canvas-shell {
+      width: min(760px, 100%); margin: 0 auto; padding: 18px; border: 1px solid #3c3c22; border-radius: 20px;
+      background: linear-gradient(180deg, #23231a 0%, #0f0f0a 100%);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+    /* Full screen: the game and its touch controls fill the screen. Uses the
+       browser's fullscreen where allowed; iPhone Safari only lets video go
+       fullscreen, so there the page does it with fixed positioning. */
+    .fs-exit { display: none; }
+    body.fs { overflow: hidden; }
+    body.fs main > :not(#play):not(#tc) { display: none; }
+    body.fs #play {
+      position: fixed; inset: 0; z-index: 10; width: auto; margin: 0; border: 0; border-radius: 0; box-shadow: none;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) 12px max(12px, env(safe-area-inset-left));
+      background: var(--lp-night);
+    }
+    body.fs .tv { width: min(100%, calc((100dvh - 60px) * 640 / 388)); }
+    body.fs .fs-exit {
+      display: block; position: absolute; z-index: 12; top: max(10px, env(safe-area-inset-top)); right: max(10px, env(safe-area-inset-right));
+      font: 11px ui-monospace, "Cascadia Mono", monospace; padding: 6px 11px; border-radius: 8px;
+      border: 1px solid var(--lp-line-2); background: rgba(20, 20, 14, 0.85); color: var(--lp-ink); cursor: pointer;
+    }
+    body.fs #tc {
+      position: fixed; z-index: 11; left: 0; right: 0; bottom: 0; width: auto; margin: 0;
+      padding: 12px max(18px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+    }
+    @media (pointer: coarse) and (orientation: portrait) {
+      body.fs .tv { width: min(100%, calc((100dvh - 260px) * 640 / 388)); }
+    }
+    @media (pointer: coarse) and (orientation: landscape) {
+      body.fs .tv { width: min(calc(100% - 250px), calc((100dvh - 30px) * 640 / 388)); }
+      body.fs #status-line { display: none; }
+      body.fs #tc { pointer-events: none; }
+      body.fs #tc button { pointer-events: auto; opacity: 0.8; }
+      body.fs .dpad { grid-template-columns: repeat(3, 42px); grid-template-rows: repeat(3, 40px); }
+      body.fs .fire { width: 76px; height: 76px; }
+    }
+    .tv { position: relative; }
+    .tv canvas, .poster img {
+      display: block; width: 100%; height: auto; aspect-ratio: 640 / 388;
+      image-rendering: pixelated; image-rendering: crisp-edges;
+    }
+    .tv canvas { border-radius: 6px; border: 1px solid #000; box-shadow: 0 0 0 2px #34341f, inset 0 0 40px rgba(0, 0, 0, 0.8); background: #000; outline: none; }
+    .tv canvas:focus-visible { box-shadow: 0 0 0 2px var(--lp-accent); }
+    .poster { position: absolute; inset: 0; display: grid; place-items: center; }
+    .poster[hidden] { display: none; }
+    .poster img { position: absolute; inset: 0; height: 100%; border-radius: 6px; }
+    .poster .lp-btn { position: relative; font-size: 16px; padding: 13px 26px; box-shadow: 0 14px 30px -6px #000; }
+    #status-line { margin-top: 14px; font-size: 10px; color: var(--lp-ink-3); letter-spacing: 1px; text-align: center; line-height: 1.9; text-transform: uppercase; font-family: ui-monospace, "Cascadia Mono", "Courier New", monospace; }
+
+    #tc { display: none; justify-content: space-between; align-items: center; width: 340px; max-width: 100%; margin: 14px auto 0; touch-action: none; user-select: none; -webkit-user-select: none; }
+    .dpad { display: grid; grid-template-columns: repeat(3, 56px); grid-template-rows: repeat(3, 48px); gap: 4px; }
+    .dpad button, .fire { font: 700 18px/1 ui-sans-serif, system-ui, sans-serif; color: var(--lp-ink); background: var(--lp-panel); border: 1px solid var(--lp-line-2); border-radius: 8px; touch-action: none; }
+    .dpad [data-hold="up"] { grid-area: 1 / 2; }
+    .dpad [data-hold="left"] { grid-area: 2 / 1; }
+    .dpad [data-hold="right"] { grid-area: 2 / 3; }
+    .dpad [data-hold="down"] { grid-area: 3 / 2; }
+    .fire { width: 92px; height: 92px; border-radius: 50%; background: #c66c3a; border-color: #7a3a1a; color: #fff; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; }
+    @media (pointer: coarse) { #tc { display: flex; } }
+
+    .lp-tray { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; width: min(760px, 100%); margin: 14px auto 0; padding: 0 4px; font-size: 12px; color: var(--lp-ink-3); }
+    .lp-tray .switches { display: flex; flex-wrap: wrap; gap: 8px; }
+    .lp-tray button { font: 11px ui-monospace, "Cascadia Mono", "Courier New", monospace; padding: 5px 11px; border-radius: 8px; border: 1px solid var(--lp-line); background: var(--lp-panel); color: var(--lp-ink-2); cursor: pointer; }
+    .lp-tray button:hover { border-color: var(--lp-line-2); color: var(--lp-ink); }
+    .lp-tray button[aria-pressed="true"] { color: var(--lp-accent); border-color: #7a7a2a; }
+
+    .panel.lp { width: min(1000px, 100%); margin: 44px auto 0; padding: 26px clamp(16px, 3vw, 30px); border: 1px solid var(--lp-line); border-radius: 16px; background: linear-gradient(180deg, var(--lp-panel) 0%, var(--lp-panel-2) 100%); }
+    .panel.lp h2 { font-size: 12px; letter-spacing: 4px; text-transform: uppercase; color: var(--lp-accent); margin: 0 0 10px; }
+    .panel.lp > p.lp-lead { font-size: 15px; line-height: 1.65; margin: 0 0 20px; max-width: 70ch; }
+    .panel.lp p.lp-lead b { color: var(--lp-ink); font-weight: 600; }
+    .lp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+    .lp-card { padding: 18px; border: 1px solid var(--lp-line); border-radius: 12px; background: rgba(255, 255, 255, 0.016); min-width: 0; }
+    .lp-card h3 { display: flex; align-items: center; gap: 9px; margin: 0 0 12px; font-size: 14px; color: var(--lp-ink); font-weight: 600; letter-spacing: 0.02em; }
+    .lp-card h3 .pts { margin-left: auto; font: 600 12px/1 ui-monospace, "Cascadia Mono", monospace; color: var(--lp-accent); }
+    .lp-card p { font-size: 13.5px; line-height: 1.6; margin: 0 0 9px; }
+    .lp-card p:last-child { margin-bottom: 0; }
+    .lp-card b { color: var(--lp-ink); font-weight: 600; }
+    .lp-card .plate { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px; min-height: 110px; padding: 10px; margin: -4px 0 14px; border-radius: 8px; background: #aaaaaa; }
+    .lp-card .plate img { image-rendering: pixelated; max-width: 100%; max-height: 120px; width: auto; }
+    ul.lp-keys { list-style: none; margin: 0; padding: 0; }
+    ul.lp-keys li { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: 1px solid rgba(255, 255, 255, 0.05); font-size: 13px; }
+    ul.lp-keys li:first-child { border-top: 0; }
+    ul.lp-keys li > span:last-child { text-align: right; flex: 0 0 auto; }
+    .lp-aside { margin-top: 18px; padding: 14px 16px; border-left: 3px solid var(--lp-accent); background: rgba(210, 210, 64, 0.07); border-radius: 0 10px 10px 0; font-size: 13.5px; line-height: 1.6; }
+    .lp-aside b { color: var(--lp-ink); }
+    .lp-aside ul { margin: 8px 0 0 18px; }
+    .lp-aside li { margin: 4px 0; }
+
+    .screens { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-top: 16px; }
+    .screens figure { margin: 0; }
+    .screens img { display: block; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--lp-line); image-rendering: pixelated; }
+    .screens figcaption { margin-top: 8px; font-size: 12.5px; line-height: 1.5; color: var(--lp-ink-3); }
+
+    .lp-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 4px; }
+    .lp-stat { padding: 16px; border: 1px solid var(--lp-line); border-radius: 12px; text-align: center; background: rgba(255, 255, 255, 0.016); }
+    .lp-stat .n { display: block; font-size: 30px; line-height: 1.1; font-weight: 700; color: var(--lp-accent); font-family: ui-monospace, "Cascadia Mono", "Courier New", monospace; font-variant-numeric: tabular-nums; }
+    .lp-stat .t { display: block; margin-top: 7px; font-size: 12px; line-height: 1.45; color: var(--lp-ink-3); }
+
+    details.lp-dev { width: min(1000px, 100%); margin: 0 auto; }
+    details.lp-dev > summary { cursor: pointer; list-style: none; margin-top: 40px; padding: 13px 16px; border: 1px solid var(--lp-line); border-radius: 12px; background: var(--lp-panel-2); font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--lp-ink-3); font-family: ui-monospace, "Cascadia Mono", "Courier New", monospace; }
+    details.lp-dev > summary::-webkit-details-marker { display: none; }
+    details.lp-dev > summary:hover { color: var(--lp-ink-2); border-color: var(--lp-line-2); }
+    details.lp-dev ul { list-style: none; padding: 16px 4px 0; display: grid; gap: 8px; font-size: 13px; }
+
+    .lp-foot { width: min(1000px, 100%); margin: 40px auto 0; padding: 22px 4px 56px; border-top: 1px solid var(--lp-line); font-size: 12px; line-height: 1.6; color: var(--lp-ink-3); display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; }
+    .lp-foot p { max-width: 70ch; }
+
+    @media (max-width: 640px) {
+      .panel.lp { margin-top: 28px; padding: 20px 16px; }
+      .lp-hero { padding: 28px 0 18px; }
+      .lp-hero .lp-sub { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="lp-hero">
+    <div class="lp-battlement" aria-hidden="true"></div>
+    <h1>Adventure</h1>
+    <div class="lp-year">Atari · Atari 2600 · 1980</div>
+    <p class="lp-sub">Warren Robinett's quest for the enchanted chalice. The cartridge's own program, <b>translated into JavaScript one instruction at a time</b> with every cycle counted, so the dragons, the bat and the castles behave exactly as they did on the console.</p>
+    <div class="lp-cta">
+      <a class="lp-btn primary" href="#play">Play now</a>
+      <a class="lp-btn" href="#how">Controls</a>
+      <a class="lp-btn" href="#rom">How it was built</a>
+    </div>
+  </header>
+
+  <div id="play" class="canvas-shell">
+    <div class="tv">
+      <canvas width="640" height="388" tabindex="0" aria-label="Adventure. Arrow keys or WASD to move, Space or Z to drop what you carry, Enter for Game Reset, G for Game Select."></canvas>
+      <div class="poster" data-poster>
+        <img src="img/start.png" alt="The start of Adventure: the gold castle with its portcullis closed, the gold key on the left and the player's square below the gate." width="640" height="388">
+        <button class="lp-btn primary" type="button" data-play>Play Adventure</button>
+      </div>
+    </div>
+    <div id="status-line" data-hint aria-live="polite">Press Play, then Game Reset to start game 1</div>
+    <button type="button" class="fs-exit" data-exit>Exit full screen</button>
+  </div>
+  <div id="tc" aria-label="Touch controls">
+    <div class="dpad">
+      <button type="button" data-hold="up" aria-label="Up">▲</button>
+      <button type="button" data-hold="left" aria-label="Left">◀</button>
+      <button type="button" data-hold="right" aria-label="Right">▶</button>
+      <button type="button" data-hold="down" aria-label="Down">▼</button>
+    </div>
+    <button type="button" class="fire" data-hold="fire">Drop</button>
+  </div>
+  <div class="lp-tray">
+    <div><kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd> move · <kbd>Space</kbd> drop · <kbd>Enter</kbd> Reset · <kbd>G</kbd> Select</div>
+    <div class="switches">
+      <button type="button" data-select>Game Select</button>
+      <button type="button" data-reset>Game Reset</button>
+      <button type="button" data-switch="leftA" aria-pressed="false" title="Left difficulty switch: pressed = A">Left A</button>
+      <button type="button" data-switch="rightA" aria-pressed="false" title="Right difficulty switch: pressed = A">Right A</button>
+      <button type="button" data-switch="color" aria-pressed="true" title="TV type switch: pressed = color">Color</button>
+      <button type="button" data-pause>Pause</button>
+      <button type="button" data-mute aria-pressed="false">Mute</button>
+      <button type="button" id="lp-fullscreen">Fullscreen</button>
+    </div>
+  </div>
+
+  <section class="panel lp" id="how">
+    <h2>How to play</h2>
+    <p class="lp-lead">The enchanted chalice is hidden somewhere in the kingdom. <b>Find it and carry it into the gold castle</b> to win. Walk into an object to pick it up; you carry it until you drop it. Keys open their castles, the sword slays dragons, and three dragons and a bat stand in your way.</p>
+    <div class="lp-grid">
+      <div class="lp-card">
+        <h3>At the controls</h3>
+        <ul class="lp-keys">
+          <li><span>Move</span><span><kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd> or WASD</span></li>
+          <li><span>Drop what you carry</span><span><kbd>Space</kbd> / <kbd>Z</kbd></span></li>
+          <li><span>Game Reset</span><span><kbd>Enter</kbd></span></li>
+          <li><span>Game Select</span><span><kbd>G</kbd></span></li>
+          <li><span>Pause · Mute</span><span><kbd>P</kbd> · <kbd>M</kbd></span></li>
+        </ul>
+        <p style="margin-top: 12px">Gamepads work too: any face button drops, Start is Game Reset, Back pauses.</p>
+      </div>
+      <div class="lp-card">
+        <h3>Three games</h3>
+        <p>Press Game Select to show the game number, again to change it, then Game Reset to play. <b>Game 3</b> puts some of the objects in random rooms every time.</p>
+        <p>Eaten by a dragon? Game Reset puts you back at the gold castle, and brings every dragon back too, even one you slew.</p>
+      </div>
+      <div class="lp-card">
+        <h3>The switches</h3>
+        <p><b>Left difficulty</b> sets how long a roaring dragon waits before it bites: in game 1 about 2.2 seconds on B and 1 second on A, in games 2 and 3 about 0.6 and 0.3 seconds.</p>
+        <p><b>Right difficulty</b> on B lets the dragons ignore the sword; on A they do not. <b>Color / B&amp;W</b> switches the picture as on the console.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel lp" id="cast">
+    <h2>The kingdom</h2>
+    <div class="lp-grid">
+      <div class="lp-card">
+        <div class="plate"><img src="img/obj-yorgle.png" alt="Yorgle, the yellow dragon" width="72" height="132"><img src="img/obj-grundle.png" alt="Grundle, the green dragon" width="72" height="132"><img src="img/obj-rhindle.png" alt="Rhindle, the red dragon" width="72" height="132"></div>
+        <h3>Yorgle, Grundle and Rhindle</h3>
+        <p>The yellow, green and red dragons share the same pictures in three colors. Touch one and it roars; still touching it when the roar ends, and you are eaten.</p>
+      </div>
+      <div class="lp-card">
+        <div class="plate"><img src="img/obj-sword.png" alt="The sword" width="72" height="36"></div>
+        <h3>Sword</h3>
+        <p>Run a dragon through with it and the dragon is slain, until the next Game Reset.</p>
+      </div>
+      <div class="lp-card">
+        <div class="plate"><img src="img/obj-key-gold.png" alt="The gold key" width="72" height="24"><img src="img/obj-key-white.png" alt="The white key" width="72" height="24"><img src="img/obj-key-black.png" alt="The black key" width="72" height="24"></div>
+        <h3>Keys</h3>
+        <p>Gold, white and black, one for each castle's portcullis: one picture in three colors.</p>
+      </div>
+      <div class="lp-card">
+        <div class="plate"><img src="img/obj-bat.png" alt="The bat" width="72" height="48"></div>
+        <h3>Bat</h3>
+        <p>Flies from room to room, carrying off objects and trading the one it holds for another.</p>
+      </div>
+      <div class="lp-card">
+        <div class="plate"><img src="img/obj-magnet.png" alt="The magnet" width="72" height="54"></div>
+        <h3>Magnet</h3>
+        <p>Draws objects in its room towards itself.</p>
+      </div>
+      <div class="lp-card">
+        <div class="plate"><img src="img/obj-chalice.png" alt="The chalice" width="72" height="60"></div>
+        <h3>Chalice</h3>
+        <p>The prize. Carry it into the gold castle and the game is yours.</p>
+      </div>
+    </div>
+    <div class="screens">
+      <figure><img src="img/room-labyrinth.png" alt="A room of the blue labyrinth." width="640" height="388"><figcaption>The blue labyrinth.</figcaption></figure>
+      <figure><img src="img/room-black-castle.png" alt="The black castle." width="640" height="388"><figcaption>The black castle.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="panel lp" id="rom">
+    <h2>Built from the ROM</h2>
+    <p class="lp-lead">This is not an emulator, and not a remake. A translator read the cartridge's 6502 code, using the disassembly for labels and comments, and wrote out <b>each instruction as a line of JavaScript</b> with its cycle count. The translated game runs on a model of the 2600's TIA and RIOT chips, and a 6502 core runs the real ROM beside it to prove the two match.</p>
+    <div class="lp-stats">
+      <div class="lp-stat"><span class="n">0</span><span class="t">differences from the cartridge in 100,000 compared frames: registers, cycles, RAM, chip writes and pixels</span></div>
+      <div class="lp-stat"><span class="n">1,236</span><span class="t">instructions translated, each with its cycle count</span></div>
+      <div class="lp-stat"><span class="n">31</span><span class="t">rooms, each drawn by the cartridge's own kernel</span></div>
+      <div class="lp-stat"><span class="n">4,096</span><span class="t">bytes in the whole cartridge, code and graphics</span></div>
+    </div>
+    <div class="lp-aside"><b>Read in the ROM.</b> A few things the code shows:
+      <ul>
+        <li>The game runs in passes of three frames. You move every frame, but the bat, the portcullises and the yellow and green dragons move once a pass, and the red dragon and the magnet once a pass in another frame.</li>
+        <li>Winning is a single test: whether the chalice's room is the gold castle.</li>
+        <li>You pick things up by touch, and the touch is the TIA's own collision latch between your square (the ball) and the object.</li>
+        <li>Game Select only changes the game number while you are looking at it; the first press just takes you there.</li>
+        <li>There is a hidden room, number 30, with the programmer's name in it, and the code that sends you there checks where the grey dot is.</li>
+      </ul>
+      The port keeps all of it, because that is the game.</div>
+    <div class="screens">
+      <figure><img src="img/room-author.png" alt="The hidden room, with the programmer's name running down the middle." width="640" height="388"><figcaption>Room 30, drawn by the translated cartridge.</figcaption></figure>
+    </div>
+  </section>
+
+  <details class="lp-dev">
+    <summary>Developer pages</summary>
+    <ul>
+      <li><a href="game.html">Game only</a>: the player on a page of its own</li>
+      <li><a href="https://github.com/Plicerin/adventure-rom-port#verify-against-the-rom">Verifying against the ROM</a>: the translator, the 6502 oracle and the comparison scripts</li>
+    </ul>
+  </details>
+
+  <footer class="lp-foot">
+    <p><i>Adventure</i> is © 1980 Atari, designed and programmed by Warren Robinett. An unofficial preservation project, not affiliated with Atari. Built with the disassembly in this repository; colors from Stella's NTSC palette. The ROM file is not included.</p>
+    <a href="https://github.com/Plicerin/adventure-rom-port">Source on GitHub</a>
+  </footer>
+</main>
+
+<script type="module">
+  import { mountPlayer } from './src/advPlayer.mjs';
+  const shell = document.getElementById('play');
+  window.__adv = mountPlayer(shell.parentElement);
+  // full screen: the browser's own where allowed (desktop, Android, iPad), and
+  // the same layout without it on iPhone, where only video may go fullscreen
+  const root = document.documentElement;
+  const nativeElement = () => document.fullscreenElement || document.webkitFullscreenElement;
+  const canNative = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+  const setFull = (on) => {
+    document.body.classList.toggle('fs', on);
+    shell.querySelector('canvas').focus({ preventScroll: true });
+  };
+  const enter = () => {
+    setFull(true);
+    if (canNative) (root.requestFullscreen || root.webkitRequestFullscreen)?.call(root)?.catch?.(() => {});
+  };
+  const leave = () => {
+    if (nativeElement()) (document.exitFullscreen || document.webkitExitFullscreen)?.call(document);
+    setFull(false);
+  };
+  document.getElementById('lp-fullscreen').addEventListener('click', () => (document.body.classList.contains('fs') ? leave() : enter()));
+  shell.querySelector('[data-exit]').addEventListener('click', leave);
+  for (const event of ['fullscreenchange', 'webkitfullscreenchange']) {
+    document.addEventListener(event, () => { if (!nativeElement()) setFull(false); });
+  }
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && document.body.classList.contains('fs') && !nativeElement()) leave(); });
+</script>
+</body>
+</html>

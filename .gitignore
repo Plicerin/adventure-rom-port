@@ -1,0 +1,15 @@
+node_modules/
+# the cartridge ROM and anything assembled from the disassembly stay local
+rom/
+*.a26
+*.bin
+tools/dasm/
+tools/build/
+tools/out/
+*.zip
+# debris from earlier broken shell commands
+({*
+\[x
+\[y
+.hermes_tmp/
+.hermes/

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Movement Diagnostic</title>
+<style>
+body { background: #000; color: #0f0; font-family: monospace; padding: 20px; }
+#canvas { border: 2px solid #0f0; image-rendering: pixelated; background: #333; }
+#log { margin-top: 20px; white-space: pre-wrap; height: 300px; overflow-y: auto; background: #111; padding: 10px; }
+</style>
+</head>
+<body>
+<h1>Movement Diagnostic Test</h1>
+<p>Press Arrow keys or WASD. Watch the Y value change.</p>
+<canvas id="canvas" width="160" height="192"></canvas>
+<div id="log">Log output...</div>
+
+<script type="module">
+const logEl = document.getElementById('log');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const ROM_Y_MAX = 106;
+const ROM_Y_MIN = 13;
+const ROM_RANGE = ROM_Y_MAX - ROM_Y_MIN; // 93
+const CANVAS_HEIGHT = 189;
+
+function log(msg) {
+  logEl.textContent += msg + '\n';
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+// Simulate the actual game coordinate pipeline
+let player = { x: 80, y: 32 };
+
+function draw() {
+  ctx.fillStyle = '#333';
+  ctx.fillRect(0, 0, 160, 192);
+  
+  // Draw walls (simple background)
+  ctx.fillStyle = '#555';
+  ctx.fillRect(0, 0, 160, 189);
+  
+  // Draw player
+  const canvasY = (ROM_Y_MAX - player.y) * (CANVAS_HEIGHT / ROM_RANGE);
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(player.x - 2, canvasY - 2, 4, 4);
+  
+  // Draw debug text
+  ctx.fillStyle = '#0f0';
+  ctx.font = '12px monospace';
+  ctx.fillText(`ROM Y: ${player.y}`, 5, 192 - 25);
+  ctx.fillText(`canvasY: ${canvasY.toFixed(1)}`, 5, 192 - 12);
+  
+  // Draw arrow indicator
+  ctx.fillStyle = '#ff0';
+  ctx.fillText(`↑ UP (Y=${player.y - 1} → ${(ROM_Y_MAX - (player.y - 1)) * (CANVAS_HEIGHT / ROM_RANGE).toFixed(1)})`, 80, 192 - 25);
+  ctx.fillText(`↓ DOWN (Y=${player.y + 1} → ${(ROM_Y_MAX - (player.y + 1)) * (CANVAS_HEIGHT / ROM_RANGE).toFixed(1)})`, 80, 192 - 12);
+  
+  requestAnimationFrame(draw);
+}
+
+const keys = {};
+window.addEventListener('keydown', (e) => {
+  keys[e.code] = true;
+  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','KeyW','KeyA','KeyS','KeyD'].includes(e.code)) {
+    e.preventDefault();
+  }
+  updateMovement();
+});
+window.addEventListener('keyup', (e) => {
+  keys[e.code] = false;
+  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','KeyW','KeyA','KeyS','KeyD'].includes(e.code)) {
+    e.preventDefault();
+  }
+  updateMovement();
+});
+
+function updateMovement() {
+  let dx = 0, dy = 0;
+  if (keys['ArrowUp'] || keys['KeyW']) dy += 1;
+  if (keys['ArrowDown'] || keys['KeyS']) dy -= 1;
+  if (keys['ArrowLeft'] || keys['KeyA']) dx -= 1;
+  if (keys['ArrowRight'] || keys['KeyD']) dx += 1;
+  
+  const oldY = player.y;
+  player.y = Math.max(ROM_Y_MIN, Math.min(ROM_Y_MAX, player.y + dy));
+  player.x = Math.max(3, Math.min(159, player.x + dx));
+  
+  if (oldY !== player.y) {
+    const oldCanvasY = (ROM_Y_MAX - oldY) * (CANVAS_HEIGHT / ROM_RANGE);
+    const newCanvasY = (ROM_Y_MAX - player.y) * (CANVAS_HEIGHT / ROM_RANGE);
+    const dir = dy > 0 ? 'UP' : 'DOWN';
+    const canvasDir = newCanvasY < oldCanvasY ? '↑(visual up)' : '↓(visual down)';
+    log(`${dir}: ROM Y ${oldY}→${player.y} canvasY ${oldCanvasY.toFixed(1)}→${newCanvasY.toFixed(1)} ${canvasDir}`);
+  }
+}
+
+draw();
+log('Diagnostic page loaded. Press ArrowUp/Down or W/S.');
+log(`Formula: canvasY = (106 - ROM_Y) * (189/93) = (106 - ROM_Y) * ${(189/93).toFixed(4)}`);
+log(`Start: ROM Y=32 → canvasY=${(ROM_Y_MAX - 32) * (CANVAS_HEIGHT / ROM_RANGE).toFixed(1)}`);
+log('Press ArrowUp → ROM Y should INCREASE → canvasY should DECREASE → sprite moves UP on screen');
+log('Press ArrowDown → ROM Y should DECREASE → canvasY should INCREASE → sprite moves DOWN on screen');
+</script>
+</body>
+</html>

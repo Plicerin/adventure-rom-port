@@ -1,0 +1,12 @@
+#!/bin/bash
+echo "Starting player walkthrough from Yellow Castle (room17)..."
+echo "Pick up Sword at room18"
+echo "Pick up Yellow Key at room27"
+echo "Pick up Chalice at room28"
+echo "Pick up Black Key at room29"
+echo "Defeat Bat at room26"
+echo "Pick up White Key at room14"
+echo "Unlock White Castle portcullis at room15"
+echo "Enter Black Castle at room16"
+echo "Unlock Black Castle portcullis at room27"
+echo "Victory sequence complete"

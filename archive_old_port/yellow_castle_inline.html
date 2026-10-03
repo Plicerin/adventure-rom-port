@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Adventure - Yellow Castle Test</title>
+<style>
+body,html{margin:0;padding:0;height:100%;background:#000;display:flex;align-items:center;justify-content:center;}
+canvas{border:3px solid #F8C838;image-rendering:pixelated;}
+</style>
+</head>
+<body>
+<canvas id="gameCanvas" width="160" height="192"></canvas>
+<script>
+// Direct inline implementation - no imports, no fancy stuff
+const PALETTE = {'$08': '#B8B8B8', '$1A': '#F8B828'}; // Match Sprites.js exactly
+
+const CastleDef = [
+    [0xF0,0xFE,0x15], [0x30,0x03,0x1F], [0x30,0x03,0xFF],
+    [0x30,0x00,0xFF], [0x30,0x00,0x3F], [0x30,0x00,0x00],
+    [0xF0,0xFF,0x0F],
+];
+
+function getPfBit(pf0, pf1, pf2, i) {
+    if (i < 8) return (pf2 >> (7 - i)) & 1;
+    else if (i < 16) return (pf1 >> (15 - i)) & 1;
+    else return (pf0 >> (23 - i)) & 1;
+}
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// Clear with room background (light gray)
+ctx.fillStyle = PALETTE['$08'];
+ctx.fillRect(0, 0, 160, 192);
+
+// Draw castle walls (yellow)
+ctx.fillStyle = PALETTE['$1A'];
+const BAND_HEIGHT = 27; // 192/7
+
+for (let row = 0; row < CastleDef.length; row++) {
+    const [pf0, pf1, pf2] = CastleDef[row];
+    const y = row * BAND_HEIGHT;
+    for (let i = 0; i < 160; i++) {
+        const bitPos = i < 80 ? Math.floor(i / 4) : Math.floor((159 - i) / 4);
+        if (getPfBit(pf0, pf1, pf2, bitPos)) {
+            ctx.fillRect(i, y, 1, BAND_HEIGHT);
+        }
+    }
+}
+
+// Draw portcullis (black) - closed state
+ctx.fillStyle = '#000000';
+ctx.fillRect(73, 49, 8, 8);
+ctx.fillRect(73, 51, 8, 2);
+ctx.fillRect(73, 54, 8, 2);
+ctx.fillRect(73, 57, 8, 2);
+
+// Draw player (white dot)
+ctx.fillStyle = '#FFFFFF';
+ctx.fillRect(80, 32, 1, 1);
+
+console.log('Yellow Castle rendered');
+</script>
+</body>
+</html>
